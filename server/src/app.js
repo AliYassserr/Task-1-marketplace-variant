@@ -15,13 +15,12 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/listings', listingRoutes);
 app.use('/api/users', userRoutes);
 
-// Not found
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
+  if (err.name === 'CastError') return res.status(400).json({ message: 'Invalid id' });
   console.error(err);
   res.status(err.status || 500).json({ message: err.message || 'Server Error' });
 });
